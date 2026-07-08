@@ -102,7 +102,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             defer: false
         )
         panel.title = "FileShelf"
-        panel.contentView = hostingView
+
+        // SwiftUI 側は touchesBegan 等を実装しないため、未処理のタッチイベントは
+        // レスポンダチェーンを通じてこのコンテナビューまで伝播してくる
+        let touchContainer = TouchDragView(frame: hostingView.frame)
+        hostingView.autoresizingMask = [.width, .height]
+        touchContainer.addSubview(hostingView)
+        panel.contentView = touchContainer
         panel.level = .floating
         panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
         panel.hidesOnDeactivate = false
